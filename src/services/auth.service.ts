@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:2020/api/auth/";
+const API_URL = "http://localhost:8080/api/auth/";
 
 export const register = (username: string, email: string, password: string) => {
   return axios.post(API_URL + "signup", {
@@ -24,6 +24,14 @@ export const login = (username: string, password: string) => {
       return response.data;
     });
 };
+
+// export function login2(loginRequest: any) {
+//   return request({
+//       url: API_BASE_URL + "/auth/signin",
+//       method: 'POST',
+//       body: JSON.stringify(loginRequest)
+//   });
+// }
 
 export const logout = () => {
   localStorage.removeItem("user");

@@ -28,6 +28,8 @@ const Login: React.FC<Props> = () => {
 
   const handleLogin = (formValue: { username: string; password: string }) => {
     const { username, password } = formValue;
+    const loginRequest = Object.assign({}, formValue);
+    console.log("loginRequest...",loginRequest);
 
     setMessage("");
     setLoading(true);

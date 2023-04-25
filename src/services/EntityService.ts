@@ -1,11 +1,11 @@
 import http from '../http-common'
 import IEntityData from '../types/Entity'
 
-const getAll = () => http.get<Array<IEntityData>>('/api/v1/entities')
+const getAll = () => http.get<Array<IEntityData>>('/entities')
 
 const get = (id: any) => http.get<IEntityData>(`/entity/get/${id}`)
 
-const create = (data: IEntityData) => http.post<IEntityData>('/entity/add', data)
+const create = (data: IEntityData) => http.post<IEntityData>('/entities', data)
 
 const update = (id: any, data: IEntityData) => http.post<any>(`/entity/edit/${id}`, data)
 

@@ -9,9 +9,9 @@ import {
   TableInstance,
 } from 'react-table';
 
-import EntityDataService from '../services/EntityService';
-import { Page } from './common/Page';
-import { Table } from './common/Table';
+import EntityDataService from '../../../services/EntityService';
+import { Page } from '../../common/Page';
+import { Table } from '../../common/Table';
 import { useTranslation } from 'react-i18next';
 
 function filterGreaterThan(
@@ -112,11 +112,12 @@ const EntitiesList: React.FC = () => {
   const retrieveEntities = () => {
     EntityDataService.getAll()
       .then((response: any) => {
-        console.log(response);
-        const newdata = response.data.content.map((x: { id: number; name: any }) => ({
-          id: x.id,
-          name: x.name,
-        }));
+        const newdata = response.data.content.map(
+          (x: { id: number; name: any }) => ({
+            id: x.id,
+            name: x.name,
+          })
+        );
         console.log(newdata);
         setData(newdata);
       })

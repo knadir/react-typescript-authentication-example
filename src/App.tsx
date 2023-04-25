@@ -11,12 +11,13 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import Profile from './components/Profile';
-import EntitiesList from './components/EntitiesList';
+import EntitiesList from './components/CodeLists/entity/EntitiesList';
 import BoardUser from './components/BoardUser';
 import BoardModerator from './components/BoardModerator';
 import BoardAdmin from './components/BoardAdmin';
 
 import EventBus from './common/EventBus';
+import AddEntity from './components/CodeLists/entity/AddEntity';
 
 const App: React.FC = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
@@ -92,7 +93,7 @@ const App: React.FC = () => {
               </Link>
             </li>
             <li className='nav-item'>
-              <Link to={'/entities'} className='nav-link'>
+              <Link to={'/code_lists/entities'} className='nav-link'>
                 Entities
               </Link>
             </li>
@@ -125,7 +126,8 @@ const App: React.FC = () => {
           <Route path='/home' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/entities' element={<EntitiesList />} />
+          <Route path='/code_lists/entities' element={<EntitiesList />} />
+          <Route path='/code_lists/entities/add' element={<AddEntity />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/user' element={<BoardUser />} />
           <Route path='/mod' element={<BoardModerator />} />
