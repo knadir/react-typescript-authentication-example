@@ -1,19 +1,32 @@
-import http from '../http-common'
+import axios from "axios";
+import authHeader from "./auth-header";
 import IEntityData from '../types/Entity'
 
-const getAll = () => http.get<Array<IEntityData>>('/entities')
+const API_URL = "http://localhost:2020/api/";
 
-const get = (id: any) => http.get<IEntityData>(`/entity/get/${id}`)
+const getAll = () => {
+  return axios.get<Array<IEntityData>>(API_URL + "entities/getAll", { headers: authHeader() });
+};
 
-const create = (data: IEntityData) => http.post<IEntityData>('/entities', data)
+const get = (id: any) => {
+  return axios.get<IEntityData>(API_URL + `entities/${id}`, { headers: authHeader() });
+};
 
-const update = (id: any, data: IEntityData) => http.post<any>(`/entity/edit/${id}`, data)
+const create = (data: IEntityData) => {
+  return axios.post(API_URL + "entities", data, { headers: authHeader() });
+};
 
-const remove = (id: any) => http.delete<any>(`/entity/delete/${id}`)
+const remove = (id: any) => {
+  return axios.delete(API_URL +`entities/${id}`, { headers: authHeader() });
+};
 
-const removeAll = () => http.delete<any>(`/entities`)
+const update = (id: any, data: IEntityData) => {
+  return axios.put(API_URL + `entities/${id}`, data, { headers: authHeader() });
+};
 
-const findByEntityName = (name: string) => http.get<Array<IEntityData>>(`/entities?name=${name}`)
+const findByEntityName = (name: string) => {
+  return axios.get<Array<IEntityData>>(API_URL + '/entities?name=${name}', { headers: authHeader() });
+};
 
 const EntityService = {
   getAll,
@@ -21,8 +34,8 @@ const EntityService = {
   create,
   update,
   remove,
-  removeAll,
   findByEntityName,
 }
 
 export default EntityService
+

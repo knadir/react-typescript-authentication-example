@@ -1,6 +1,35 @@
 import axios from "axios";
+import { API_BASE_URL, POLL_LIST_SIZE, ACCESS_TOKEN } from '../constants';
 
-const API_URL = "http://localhost:8080/api/auth/";
+import IOption from "../types/option.type";
+
+const API_URL = "http://localhost:2020/api/auth/";
+
+// const request = (options: RequestInit | undefined) => {
+//   const headers = new Headers({
+//       'Content-Type': 'application/json',
+//   })
+  
+//   if(localStorage.getItem(ACCESS_TOKEN)) {
+//       headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
+//   }
+
+//   const defaults = {headers: headers};
+//   options = Object.assign({}, defaults, options);
+
+//   console.log("options.url...",options.url);
+//   console.log("options...",options);
+
+//   return fetch(options.url, options)
+//   .then(response => 
+//       response.json().then(json => {
+//           if(!response.ok) {
+//               return Promise.reject(json);
+//           }
+//           return json;
+//       })
+//   );
+// };                   
 
 export const register = (username: string, email: string, password: string) => {
   return axios.post(API_URL + "signup", {

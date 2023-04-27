@@ -14,27 +14,27 @@ const Login: React.FC<Props> = () => {
   const [message, setMessage] = useState<string>("");
 
   const initialValues: {
-    username: string;
+    usernameOrEmail: string;
     password: string;
   } = {
-    username: "",
+    usernameOrEmail: "",
     password: "",
   };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("This field is required!"),
+    usernameOrEmail: Yup.string().required("This field is required!"),
     password: Yup.string().required("This field is required!"),
   });
 
-  const handleLogin = (formValue: { username: string; password: string }) => {
-    const { username, password } = formValue;
+  const handleLogin = (formValue: { usernameOrEmail: string; password: string }) => {
+    const { usernameOrEmail, password } = formValue;
     const loginRequest = Object.assign({}, formValue);
     console.log("loginRequest...",loginRequest);
 
     setMessage("");
     setLoading(true);
 
-    login(username, password).then(
+    login(usernameOrEmail, password).then(
       () => {
         navigate("/profile");
         window.location.reload();
@@ -68,10 +68,10 @@ const Login: React.FC<Props> = () => {
         >
           <Form>
             <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <Field name="username" type="text" className="form-control" />
+              <label htmlFor="usernameOrEmail">Username</label>
+              <Field name="usernameOrEmail" type="text" className="form-control" />
               <ErrorMessage
-                name="username"
+                name="usernameOrEmail"
                 component="div"
                 className="alert alert-danger"
               />

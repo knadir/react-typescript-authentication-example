@@ -112,7 +112,8 @@ const EntitiesList: React.FC = () => {
   const retrieveEntities = () => {
     EntityDataService.getAll()
       .then((response: any) => {
-        const newdata = response.data.content.map(
+        console.log('response.data...', response.data);
+        const newdata = response.data.map(
           (x: { id: number; name: any }) => ({
             id: x.id,
             name: x.name,
