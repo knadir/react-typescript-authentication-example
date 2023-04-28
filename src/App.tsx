@@ -19,6 +19,9 @@ import EventBus from './common/EventBus';
 import EntitiesList from './components/CodeLists/entity/EntitiesList';
 import AddEntity from './components/CodeLists/entity/AddEntity';
 import Entity from './components/CodeLists/entity/Entity';
+import CountiesList from './components/CodeLists/county/CountiesList';
+import AddCounty from './components/CodeLists/county/AddCounty';
+import County from './components/CodeLists/county/County';
 
 const App: React.FC = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
@@ -99,6 +102,11 @@ const App: React.FC = () => {
               </Link>
             </li>
             <li className='nav-item'>
+              <Link to={'/code_lists/counties'} className='nav-link'>
+                Counties
+              </Link>
+            </li>
+            <li className='nav-item'>
               <a href='/login' className='nav-link' onClick={logOut}>
                 LogOut
               </a>
@@ -129,7 +137,10 @@ const App: React.FC = () => {
           <Route path='/register' element={<Register />} />
           <Route path='/code_lists/entities' element={<EntitiesList />} />
           <Route path='/code_lists/entities/add' element={<AddEntity />} />
-          <Route path='code_lists/entities/:id' element={<Entity />} />
+          <Route path='/code_lists/entities/:id' element={<Entity />} />
+          <Route path='/code_lists/counties' element={<CountiesList />} />
+          <Route path='/code_lists/counties/add' element={<AddCounty />} />
+          <Route path='/code_lists/counties/:id' element={<County />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/user' element={<BoardUser />} />
           <Route path='/mod' element={<BoardModerator />} />
