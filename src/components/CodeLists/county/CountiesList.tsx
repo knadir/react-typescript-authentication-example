@@ -67,6 +67,8 @@ function makeDataCounty(...lens: number[]): DataBaseDataCounty[] {
 
 const CountiesList: React.FC = () => {
   const { t } = useTranslation();
+  const header_group_entities = t('entities');
+  const header_group_counties = t('counties');
   const header_id = t('id');
   const header_name = t('name');
 
@@ -76,10 +78,13 @@ const CountiesList: React.FC = () => {
 
   const columns = [
     {
+      Header: header_group_counties,
       columns: [
         {
           Header: header_id,
           accessor: 'id',
+          // width: 20,
+          // minWidth: 10,
           aggregate: 'count',
           Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
             `${value} Names`,
@@ -92,6 +97,7 @@ const CountiesList: React.FC = () => {
         {
           Header: header_name,
           accessor: 'name',
+          // minWidth: 50,
           aggregate: 'count',
           Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
             `${value} Names`,
@@ -103,7 +109,29 @@ const CountiesList: React.FC = () => {
         },
       ],
     },
-  ].flatMap((c: any) => c.columns); // remove comment to drop header groups
+    {
+      Header: header_group_entities,
+      columns: [
+        {
+          Header: header_id,
+          accessor: 'entityId',
+          // width: 20,
+          // minWidth: 10,
+          aggregate: 'count',
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
+            `${value} Names`,
+        },
+        {
+          Header: header_name,
+          accessor: 'entityName',
+          // minWidth: 50,
+          aggregate: 'count',
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
+            `${value} Names`,
+        },
+      ],
+    },
+  ]; //.flatMap((c: any) => c.columns) // remove comment to drop header groups
 
   useEffect(() => {
     retrieveCounties();
@@ -113,12 +141,12 @@ const CountiesList: React.FC = () => {
     CountyDataService.getAll()
       .then((response: any) => {
         console.log('response.data...', response.data);
-        const newdata = response.data.map(
-          (x: { id: number; name: any }) => ({
-            id: x.id,
-            name: x.name,
-          })
-        );
+        const newdata = response.data.map((x: { id: number; name: any; entityId: any; entityName: any }) => ({
+          id: x.id,
+          name: x.name,
+          entityId: x.entityId,
+          entityName: x.entityName,
+        }));
         console.log(newdata);
         setData(newdata);
       })

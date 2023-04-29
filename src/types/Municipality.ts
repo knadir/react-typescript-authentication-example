@@ -1,22 +1,20 @@
-import { IEntity } from "./Entity"
-
-export default interface ICountyData {
+export default interface IMunicipalityData {
   id?: number | null
   name: string
-  entityId?: number | null
-  entityName?: string | null
+  countyId?: number | null
+  countyName?: string | null
 }
 
-export interface ICounty {
+export interface IMunicipality {
   id?: number | null
-  name?: string
-  entityId?: number | null
+  name: string
+  countyId?: number | null
 }
 
-export interface ICountyType {
+export interface IMunicipalityType {
   id?: number | null
   name?: string
-  entity?: IEntity
+  county?: ICounty
 }
 
 export interface ISelectOption {
@@ -24,17 +22,17 @@ export interface ISelectOption {
   name?: string
 }
 
-export type IEntityId = number
+export type ICountyId = number
 
-export interface IEntitiy {
+export interface ICounty {
   id?: string | number | null
   name?: string
 }
 
-export interface IEditableCounty {
+export interface IEditableMunicipality {
   id?: number | null
   name?: string
-  entityId?: IEntityId
+  countyId?: ICountyId
   isNew: boolean
 }
 
@@ -51,7 +49,7 @@ export interface IError {
   fieldErrors: IFieldErrors
 }
 
-export interface ICountyRequest {
+export interface IMunicipalityRequest {
   name?: string
-  entityId?: IEntityId
+  countyId?: ICountyId
 }

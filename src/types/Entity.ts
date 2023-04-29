@@ -18,10 +18,10 @@ export interface ISelectOption {
   name?: string
 }
 
-export type IEntitiesId = number
+export type IEntityId = number
 
-export interface IEntities {
-  id?: string | number | null
+export interface IEntity {
+  id?: number | null
   name?: string
 }
 
