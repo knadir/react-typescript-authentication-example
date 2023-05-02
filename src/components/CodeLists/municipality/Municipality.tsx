@@ -9,40 +9,40 @@ import Typography from '@mui/material/Typography';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import EntityDataService from '../../../services/EntityService';
 import CountyDataService from '../../../services/CountyService';
-import ICountyData from '../../../types/County';
+import MunicipalityDataService from '../../../services/MunicipalityService';
+import IMunicipalityData from '../../../types/Municipality';
 import { Page } from '../../../components/common/Page';
 import { useTranslation } from 'react-i18next';
 
-interface EntityType {
+interface CountyType {
   inputValue?: string;
   name: string;
   id?: number;
 }
 
-const entities: EntityType[] = [];
+const counties: CountyType[] = [];
 
 export default function FreeSoloCreateOption() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const initialCountyState = {
+  const initialMunicipalityState = {
     id: null,
     name: '',
-    entityId: null,
-    entityName: '',
+    countyId: null,
+    countyName: '',
   };
-  const [currentCounty, setCurrentCounty] =
-    useState<ICountyData>(initialCountyState);
+  const [currentMunicipality, setCurrentMunicipality] =
+    useState<IMunicipalityData>(initialMunicipalityState);
   const [message, setMessage] = useState<string>('');
 
-  const getCounty = (id: string) => {
-    CountyDataService.get(id)
+  const getMunicipality = (id: string) => {
+    MunicipalityDataService.get(id)
       .then((response: any) => {
-        setCurrentCounty(response.data);
-        setValue(response.data.entityName);
+        setCurrentMunicipality(response.data);
+        setValue(response.data.countyName);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -50,58 +50,58 @@ export default function FreeSoloCreateOption() {
   };
 
   useEffect(() => {
-    if (id) getCounty(id);
+    if (id) getMunicipality(id);
   }, [id]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setCurrentCounty({ ...currentCounty, [name]: value });
+    setCurrentMunicipality({ ...currentMunicipality, [name]: value });
   };
 
-  const updateCounty = () => {
+  const updateMunicipality = () => {
     if (!(value?.id === undefined || value?.id === null)) {
-      currentCounty.entityId = value?.id;
+      currentMunicipality.countyId = value?.id;
     };
-    CountyDataService.update(currentCounty.id, currentCounty)
+    MunicipalityDataService.update(currentMunicipality.id, currentMunicipality)
       .then((response: any) => {
-        setMessage('The county was updated successfully!');
+        setMessage('The municipality was updated successfully!');
       })
       .catch((e: Error) => {
         console.log(e);
       });
   };
 
-  const deleteCounty = () => {
-    CountyDataService.remove(currentCounty.id)
+  const deleteMunicipality = () => {
+    MunicipalityDataService.remove(currentMunicipality.id)
       .then((response: any) => {
         console.log(response.data);
-        navigate('/code_lists/counties');
+        navigate('/code_lists/municipalities');
       })
-      .catch((e: Error) => {        
+      .catch((e: Error) => {
         console.log(e);
       });
   };
 
-  const [value, setValue] = React.useState<EntityType | null>(null);
+  const [value, setValue] = React.useState<CountyType | null>(null);
 
   useEffect(() => {
-    retrieveEntities();
+    retrieveCounties();
   }, []);
 
-  const retrieveEntities = () => {
-    EntityDataService.getAll()
+  const retrieveCounties = () => {
+    CountyDataService.getAll()
       .then((response: any) => {
         const newdata = response.data.map((x: { id: number; name: any }) => ({
           id: x.id,
           name: x.name,
         }));
         for (let i = 0; i < newdata.length; i++) {
-          entities.push({ name: '', id: 0 });
+          counties.push({ name: '', id: 0 });
         }
 
         for (let i = 0; i < newdata.length; i++) {
-          entities[i].name = newdata[i].name;
-          entities[i].id = newdata[i].id;
+          counties[i].name = newdata[i].name;
+          counties[i].id = newdata[i].id;
         }
       })
       .catch((e: Error) => {
@@ -112,16 +112,16 @@ export default function FreeSoloCreateOption() {
   return (
     <Page>
       <div>
-        {currentCounty ? (
+        {currentMunicipality ? (
           <div className='edit-form'>
             <Typography variant='h4' gutterBottom>
-              County
+              Municipality
             </Typography>
           </div>
         ) : (
           <div>
             <br />
-            <p>Please click on a County...</p>
+            <p>Please click on a Municipality...</p>
           </div>
         )}
         <Box
@@ -137,7 +137,7 @@ export default function FreeSoloCreateOption() {
             label='Name'
             variant='outlined'
             required
-            value={currentCounty.name}
+            value={currentMunicipality.name}
             onChange={handleInputChange}
           />
           <Autocomplete
@@ -162,8 +162,8 @@ export default function FreeSoloCreateOption() {
             selectOnFocus
             clearOnBlur
             handleHomeEndKeys
-            id='entityName'
-            options={entities}
+            id='countyName'
+            options={counties}
             getOptionLabel={(option) => {
               // Value selected with enter, right from the input
               if (typeof option === 'string') {
@@ -179,15 +179,13 @@ export default function FreeSoloCreateOption() {
             )}
             sx={{ width: 500 }}
             //freeSolo
-            renderInput={(params) => (
-              <TextField {...params} label={t('entities')} />
-            )}
+            renderInput={(params) => <TextField {...params} label={t("counties")} />}
           />
           <Stack sx={{ mt: 2 }} spacing={2} direction='row'>
             <Button
               variant='contained'
               color='error'
-              onClick={deleteCounty}
+              onClick={deleteMunicipality}
               startIcon={<DeleteIcon />}
             >
               Delete
@@ -195,7 +193,7 @@ export default function FreeSoloCreateOption() {
             <Button
               variant='contained'
               color='success'
-              onClick={updateCounty}
+              onClick={updateMunicipality}
               endIcon={<SendIcon />}
             >
               Update

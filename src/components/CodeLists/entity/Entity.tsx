@@ -10,8 +10,12 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import EntityDataService from '../../../services/EntityService';
+import CountyDataService from '../../../services/CountyService';
 import IEntityData from '../../../types/Entity';
+import ICountyData from '../../../types/County';
 import { Page } from '../../common/Page';
+import { AxiosError } from 'axios';
+import { getAxiosMessage } from "../../../services/EntityService";
 
 const Entity: React.FC = () => {
   const { id } = useParams();
@@ -21,15 +25,23 @@ const Entity: React.FC = () => {
     id: null,
     name: '',
   };
+
+  const initialCountyState = {
+    id: null,
+    name: '',
+    entityId: null,
+  };
+
   const [currentEntity, setCurrentEntity] =
     useState<IEntityData>(initialEntityState);
+  const [currentCounty, setCurrentCounty] =
+    useState<ICountyData>(initialCountyState);
   const [message, setMessage] = useState<string>('');
 
   const getEntity = (id: string) => {
     EntityDataService.get(id)
       .then((response: any) => {
         setCurrentEntity(response.data);
-        console.log(response.data);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -38,6 +50,20 @@ const Entity: React.FC = () => {
 
   useEffect(() => {
     if (id) getEntity(id);
+  }, [id]);
+
+  const getCounty = (entityId: string) => {
+    CountyDataService.findByEntityId(entityId)
+      .then((response: any) => {
+        setCurrentCounty(response.data);
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    if (id) getCounty(id);
   }, [id]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -62,8 +88,12 @@ const Entity: React.FC = () => {
         console.log(response.data);
         navigate('/code_lists/entities');
       })
-      .catch((e: Error) => {
-        console.log(e);
+      .catch((e: AxiosError) => {
+        if (!currentCounty.id) {
+          // setMessage('Can not remove a entity that has counties.');
+          setMessage(getAxiosMessage);
+        }
+        console.log(e); // now works
       });
   };
 

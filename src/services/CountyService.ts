@@ -28,6 +28,10 @@ const findByCountyName = (name: string) => {
   return axios.get<Array<ICountyData>>(API_URL + '/counties?name=${name}', { headers: authHeader() });
 };
 
+const findByEntityId = (entityId: any) => {
+  return axios.get<Array<ICountyData>>(API_URL + `entities/${entityId}/counties`, { headers: authHeader() });
+};
+
 const CountyService = {
   getAll,
   get,
@@ -35,6 +39,7 @@ const CountyService = {
   update,
   remove,
   findByCountyName,
+  findByEntityId,
 }
 
 export default CountyService

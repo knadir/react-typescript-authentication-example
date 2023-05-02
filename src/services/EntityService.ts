@@ -17,7 +17,9 @@ const create = (data: IEntityData) => {
 };
 
 const remove = (id: any) => {
-  return axios.delete(API_URL +`entities/${id}`, { headers: authHeader() });
+  return axios.delete(API_URL + `entities/${id}`, { headers: authHeader() }).catch((error) => {
+    localStorage.setItem("axiosMessage", JSON.stringify(error.response?.data?.message));
+  });;
 };
 
 const update = (id: any, data: IEntityData) => {
@@ -25,7 +27,15 @@ const update = (id: any, data: IEntityData) => {
 };
 
 const findByEntityName = (name: string) => {
-  return axios.get<Array<IEntityData>>(API_URL + '/entities?name=${name}', { headers: authHeader() });
+  // return axios.get<Array<IEntityData>>(API_URL + '/entities?name=${name}', { headers: authHeader() });
+  return axios.get<Array<IEntityData>>(API_URL + `entities?name=${name}`, { headers: authHeader() });
+};
+
+export const getAxiosMessage = () => {
+  const axiosMessageStr = localStorage.getItem("axiosMessage");
+  if (axiosMessageStr) return JSON.parse(axiosMessageStr);
+
+  return null;
 };
 
 const EntityService = {
@@ -35,6 +45,7 @@ const EntityService = {
   update,
   remove,
   findByEntityName,
+  getAxiosMessage,
 }
 
 export default EntityService
