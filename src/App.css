@@ -30,3 +30,11 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: 300px;
+}

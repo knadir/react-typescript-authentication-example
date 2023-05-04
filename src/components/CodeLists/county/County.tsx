@@ -14,6 +14,8 @@ import CountyDataService from '../../../services/CountyService';
 import ICountyData from '../../../types/County';
 import { Page } from '../../../components/common/Page';
 import { useTranslation } from 'react-i18next';
+import { Grid } from '@mui/material';
+import IEntityData from '../../../types/Entity';
 
 interface EntityType {
   inputValue?: string;
@@ -22,6 +24,7 @@ interface EntityType {
 }
 
 const entities: EntityType[] = [];
+const entity: EntityType[] = [];
 
 export default function FreeSoloCreateOption() {
   const { t } = useTranslation();
@@ -34,8 +37,15 @@ export default function FreeSoloCreateOption() {
     entityId: null,
     entityName: '',
   };
+  const initialEntityState = {
+    id: null,
+    name: '',
+  };
+
   const [currentCounty, setCurrentCounty] =
     useState<ICountyData>(initialCountyState);
+  const [currentEntity, setCurrentEntity] =
+    useState<IEntityData>(initialEntityState);
   const [message, setMessage] = useState<string>('');
 
   const getCounty = (id: string) => {
@@ -53,15 +63,35 @@ export default function FreeSoloCreateOption() {
     if (id) getCounty(id);
   }, [id]);
 
+  const getEntity = (id: string | null | undefined) => {
+    EntityDataService.get(id)
+      .then((response: any) => {
+        setCurrentEntity(response.data);
+        // setValue(response.data.entityName);
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+  };
+
+  // useEffect(() => {
+  //   if (id) getEntity(currentCounty.entityId);
+  // }, [id]);
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setCurrentCounty({ ...currentCounty, [name]: value });
+    setCurrentEntity({ ...currentEntity, [name]: value });
+    if (event.target.value) getEntity(event.target.value);
+    console.log('event.target.value...', event.target.value);
+    console.log('currentCounty.entityId...', currentCounty.entityId);
+    console.log('currentEntity...', currentEntity);
   };
 
   const updateCounty = () => {
     if (!(value?.id === undefined || value?.id === null)) {
       currentCounty.entityId = value?.id;
-    };
+    }
     CountyDataService.update(currentCounty.id, currentCounty)
       .then((response: any) => {
         setMessage('The county was updated successfully!');
@@ -77,7 +107,7 @@ export default function FreeSoloCreateOption() {
         console.log(response.data);
         navigate('/code_lists/counties');
       })
-      .catch((e: Error) => {        
+      .catch((e: Error) => {
         console.log(e);
       });
   };
@@ -140,6 +170,27 @@ export default function FreeSoloCreateOption() {
             value={currentCounty.name}
             onChange={handleInputChange}
           />
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                id='entityId'
+                name='entityId'
+                label='Entity Id'
+                variant='outlined'
+                required
+                value={currentCounty.entityId}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <div className='edit-form'>
+                <Typography variant='body1' gutterBottom>
+                  {currentEntity.name}
+                </Typography>
+              </div>
+            </Grid>
+          </Grid>
           <Autocomplete
             value={value}
             isOptionEqualToValue={(option, value) =>

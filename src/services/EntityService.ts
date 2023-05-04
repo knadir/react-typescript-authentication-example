@@ -34,7 +34,6 @@ const findByEntityName = (name: string) => {
 export const getAxiosMessage = () => {
   const axiosMessageStr = localStorage.getItem("axiosMessage");
   if (axiosMessageStr) return JSON.parse(axiosMessageStr);
-
   return null;
 };
 

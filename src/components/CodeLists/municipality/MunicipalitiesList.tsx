@@ -140,7 +140,7 @@ const MunicipalitiesList: React.FC = () => {
     <Page>
       <CssBaseline />
       <Table<DataBaseDataMunicipality>
-        name={'Municipalities'}
+        name={t('municipalities')}
         columns={columns}
         data={data}
         onAdd={addMunicipality}
