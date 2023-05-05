@@ -9,52 +9,41 @@ import Typography from '@mui/material/Typography';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import EntityDataService from '../../../services/EntityService';
-import CountyDataService from '../../../services/CountyService';
-import ICountyData from '../../../types/County';
+import MunicipalityDataService from '../../../services/MunicipalityService';
+import EmployerDataService from '../../../services/EmployerService';
+import IEmployerData from '../../../types/Employer';
 import { Page } from '../../../components/common/Page';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
-import IEntityData from '../../../types/Entity';
 
-interface EntityType {
+interface MunicipalityType {
   inputValue?: string;
   name: string;
   id?: number;
 }
 
-const entities: EntityType[] = [];
-const entity: EntityType[] = [];
+const municipalities: MunicipalityType[] = [];
 
 export default function FreeSoloCreateOption() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const { entityId } = useParams();
   const navigate = useNavigate();
 
-  const initialCountyState = {
+  const initialEmployerState = {
     id: null,
-    name: '',
-    entityId: null,
-    entityName: '',
+    firstName: '',
+    lastName: '',
+    municipalityId: null,
+    municipalityName: '',
   };
-  const initialEntityState = {
-    id: null,
-    name: '',
-  };
-
-  const [currentCounty, setCurrentCounty] =
-    useState<ICountyData>(initialCountyState);
-  const [currentEntity, setCurrentEntity] =
-    useState<IEntityData>(initialEntityState);
+  const [currentEmployer, setCurrentEmployer] =
+    useState<IEmployerData>(initialEmployerState);
   const [message, setMessage] = useState<string>('');
 
-  const getCounty = (id: string) => {
-    CountyDataService.get(id)
+  const getEmployer = (id: string) => {
+    EmployerDataService.get(id)
       .then((response: any) => {
-        setCurrentCounty(response.data);
-        getEntity(response.data.entityId);
-        setValue(response.data.entityName);
+        setCurrentEmployer(response.data);
+        setValue(response.data.municipalityName);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -62,90 +51,58 @@ export default function FreeSoloCreateOption() {
   };
 
   useEffect(() => {
-    if (id) getCounty(id);
+    if (id) getEmployer(id);
   }, [id]);
-
-  const getEntity = (id: string | null | undefined) => {
-    EntityDataService.get(id)
-      .then((response: any) => {
-        setCurrentEntity(response.data);
-        // setValue(response.data.entityName);
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
-  };
-
-  // useEffect(() => {
-  //   console.log('id...', entityId);
-  //   if (id) getEntity(id);
-  // }, [id]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setCurrentCounty({ ...currentCounty, [name]: value });
-    // setCurrentEntity({ ...currentEntity, [name]: value });
-    if (event.target.value) {
-      // getEntity(event.target.value);
-      EntityDataService.get(event.target.value)
-        .then((response: any) => {
-          setCurrentEntity(response.data);
-          // setValue(response.data.entityName);
-        })
-        .catch((e: Error) => {
-          setMessage('Not found entity with id:' + event.target.value);
-          console.log('Not found entity with id:' + event.target.value);
-        });
-    }
-    console.log('event.target.value...', event.target.value);
-    console.log('currentCounty.entityId...', currentCounty.entityId);
-    console.log('currentEntity...', currentEntity);
+    setCurrentEmployer({ ...currentEmployer, [name]: value });
   };
 
-  const updateCounty = () => {
+  const updateEmployer = () => {
     if (!(value?.id === undefined || value?.id === null)) {
-      currentCounty.entityId = value?.id;
+      currentEmployer.municipalityId = value?.id;
     }
-    CountyDataService.update(currentCounty.id, currentCounty)
+    EmployerDataService.update(currentEmployer.id, currentEmployer)
       .then((response: any) => {
-        setMessage('The county was updated successfully!');
+        setMessage('The employer was updated successfully!');
       })
       .catch((e: Error) => {
         console.log(e);
       });
   };
 
-  const deleteCounty = () => {
-    CountyDataService.remove(currentCounty.id)
+  const deleteEmployer = () => {
+    EmployerDataService.remove(currentEmployer.id)
       .then((response: any) => {
         console.log(response.data);
-        navigate('/code_lists/counties');
+        navigate('/code_lists/employers');
       })
       .catch((e: Error) => {
         console.log(e);
       });
   };
 
-  const [value, setValue] = React.useState<EntityType | null>(null);
+  const [value, setValue] = React.useState<MunicipalityType | null>(null);
 
   useEffect(() => {
-    retrieveEntities();
+    retrieveMunicipalities();
   }, []);
 
-  const retrieveEntities = () => {
-    EntityDataService.getAll()
+  const retrieveMunicipalities = () => {
+    MunicipalityDataService.getAll()
       .then((response: any) => {
         const newdata = response.data.map((x: { id: number; name: any }) => ({
           id: x.id,
           name: x.name,
         }));
         for (let i = 0; i < newdata.length; i++) {
-          entities.push({ name: '', id: 0 });
+          municipalities.push({ name: '', id: 0 });
         }
 
         for (let i = 0; i < newdata.length; i++) {
-          entities[i].name = newdata[i].name;
-          entities[i].id = newdata[i].id;
+          municipalities[i].name = newdata[i].name;
+          municipalities[i].id = newdata[i].id;
         }
       })
       .catch((e: Error) => {
@@ -156,16 +113,16 @@ export default function FreeSoloCreateOption() {
   return (
     <Page>
       <div>
-        {currentCounty ? (
+        {currentEmployer ? (
           <div className='edit-form'>
             <Typography variant='h4' gutterBottom>
-              {t("county")}
+              {t('employer')}
             </Typography>
           </div>
         ) : (
           <div>
             <br />
-            <p>Please click on a County...</p>
+            <p>Please click on a Employer...</p>
           </div>
         )}
         <Box
@@ -176,36 +133,24 @@ export default function FreeSoloCreateOption() {
         >
           <TextField
             fullWidth
-            id='name'
-            name='name'
-            label={t("name")}
+            id='firstName'
+            name='firstName'
+            label='First name'
             variant='outlined'
             required
-            value={currentCounty.name}
+            value={currentEmployer.firstName}
             onChange={handleInputChange}
           />
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                id='entityId'
-                name='entityId'
-                label={t("entity")}
-                InputLabelProps={{ shrink: true }}
-                variant='outlined'
-                required
-                value={currentCounty.entityId}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <div className='edit-form'>
-                <Typography variant='body1' gutterBottom>
-                  {currentEntity.name}
-                </Typography>
-              </div>
-            </Grid>
-          </Grid>
+          <TextField
+            fullWidth
+            id='lastame'
+            name='lastName'
+            label='Last name'
+            variant='outlined'
+            required
+            value={currentEmployer.lastName}
+            onChange={handleInputChange}
+          />
           <Autocomplete
             value={value}
             isOptionEqualToValue={(option, value) =>
@@ -228,8 +173,8 @@ export default function FreeSoloCreateOption() {
             selectOnFocus
             clearOnBlur
             handleHomeEndKeys
-            id='entityName'
-            options={entities}
+            id='municipalityName'
+            options={municipalities}
             getOptionLabel={(option) => {
               // Value selected with enter, right from the input
               if (typeof option === 'string') {
@@ -246,14 +191,14 @@ export default function FreeSoloCreateOption() {
             sx={{ width: 500 }}
             //freeSolo
             renderInput={(params) => (
-              <TextField {...params} label={t('entities')} />
+              <TextField {...params} label={t('municipalities')} />
             )}
           />
           <Stack sx={{ mt: 2 }} spacing={2} direction='row'>
             <Button
               variant='contained'
               color='error'
-              onClick={deleteCounty}
+              onClick={deleteEmployer}
               startIcon={<DeleteIcon />}
             >
               Delete
@@ -261,7 +206,7 @@ export default function FreeSoloCreateOption() {
             <Button
               variant='contained'
               color='success'
-              onClick={updateCounty}
+              onClick={updateEmployer}
               endIcon={<SendIcon />}
             >
               Update

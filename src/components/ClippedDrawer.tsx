@@ -262,6 +262,14 @@ export default function DrawerAppBar(props: Props) {
               >
                 <MenuItem
                   onClick={() =>
+                    navigate('/code_lists/employers', { replace: true })
+                  }
+                  onMouseUp={() => menuItemMouseUpHandler('Employers')}
+                >
+                  {t('employers')}
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
                     navigate('/code_lists/entities', { replace: true })
                   }
                   onMouseUp={() => menuItemMouseUpHandler('Entities')}

@@ -9,9 +9,10 @@ import {
   TableInstance,
 } from 'react-table';
 
-import CountyDataService from '../../../services/CountyService';
+import EmployerDataService from '../../../services/EmployerService';
 import { Page } from '../../common/Page';
 import { Table } from '../../common/Table';
+import { DataBaseDataEmployer, makeDataEmployer } from '../../common/utils';
 import { useTranslation } from 'react-i18next';
 
 function filterGreaterThan(
@@ -31,56 +32,21 @@ function filterGreaterThan(
 // check, but here, we want to remove the filter if it's not a number
 filterGreaterThan.autoRemove = (val: any) => typeof val !== 'number';
 
-type County = {
-  id: number;
-  name: string;
-  entityId: number;
-};
-
-const newCounty = (): County => ({
-  id: /*Math.floor(Math.random() * 30)*/ 0,
-  name: /*namor.generate({ words: 1, saltLength: 0, subset: 'manly' })*/ '',
-  entityId: /*namor.generate({ words: 1, saltLength: 0, subset: 'manly' })*/ 0,
-});
-
-type DataBaseDataCounty = County & {
-  subRows?: DataBaseDataCounty[];
-};
-
-const range = (len: number) => {
-  const arr = [];
-  for (let i = 0; i < len; i++) {
-    arr.push(i);
-  }
-  return arr;
-};
-
-function makeDataCounty(...lens: number[]): DataBaseDataCounty[] {
-  const makeDataLevelCounty = (depth = 0): DataBaseDataCounty[] => {
-    const len = lens[depth];
-    return range(len).map(() => ({
-      ...newCounty(),
-      subRows: lens[depth + 1] ? makeDataLevelCounty(depth + 1) : undefined,
-    }));
-  };
-
-  return makeDataLevelCounty();
-}
-
-const CountiesList: React.FC = () => {
+const EmployersList: React.FC = () => {
   const { t } = useTranslation();
-  const header_group_entities = t('entities');
-  const header_group_counties = t('counties');
+  const header_group_employers = t('employers');
+  const header_group_municipalities = t('municipalities');
   const header_id = t('id');
   const header_name = t('name');
-
-  const [data, setData] = React.useState<DataBaseDataCounty[]>(() =>
-    makeDataCounty(100)
+  const header_first_name = t('first_name');
+  const header_last_name = t('last_name');
+  const [data, setData] = React.useState<DataBaseDataEmployer[]>(() =>
+    makeDataEmployer(100)
   );
 
   const columns = [
     {
-      Header: header_group_counties,
+      Header: header_group_employers,
       columns: [
         {
           Header: header_id,
@@ -88,7 +54,7 @@ const CountiesList: React.FC = () => {
           // width: 20,
           // minWidth: 10,
           aggregate: 'count',
-          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
             `${value} Names`,
           options: {
             filter: true,
@@ -97,11 +63,24 @@ const CountiesList: React.FC = () => {
           },
         },
         {
-          Header: header_name,
-          accessor: 'name',
+          Header: header_first_name,
+          accessor: 'firstName',
           // minWidth: 50,
           aggregate: 'count',
-          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
+            `${value} Names`,
+          options: {
+            filter: true,
+            sort: true,
+            sortDirection: 'desc',
+          },
+        },
+        {
+          Header: header_last_name,
+          accessor: 'lastName',
+          // minWidth: 50,
+          aggregate: 'count',
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
             `${value} Names`,
           options: {
             filter: true,
@@ -112,23 +91,23 @@ const CountiesList: React.FC = () => {
       ],
     },
     {
-      Header: header_group_entities,
+      Header: header_group_municipalities,
       columns: [
         {
           Header: header_id,
-          accessor: 'entityId',
+          accessor: 'municipalityId',
           // width: 20,
           // minWidth: 10,
           aggregate: 'count',
-          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
             `${value} Names`,
         },
         {
           Header: header_name,
-          accessor: 'entityName',
+          accessor: 'municipalityName',
           // minWidth: 50,
           aggregate: 'count',
-          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataCounty>) =>
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
             `${value} Names`,
         },
       ],
@@ -136,22 +115,30 @@ const CountiesList: React.FC = () => {
   ]; //.flatMap((c: any) => c.columns) // remove comment to drop header groups
 
   useEffect(() => {
-    retrieveCounties();
+    retrieveEmployers();
   }, []);
 
-  const retrieveCounties = () => {
-    CountyDataService.getAll()
+  const retrieveEmployers = () => {
+    EmployerDataService.getAll()
       .then((response: any) => {
-        console.log('response.data...', response.data);
         const newdata = response.data.map(
-          (x: { id: number; name: any; entityId: any; entityName: any }) => ({
+          (x: {
+            id: any;
+            name: any;
+            firstName: any;
+            lastName: any;
+            municipalityId: any;
+            municipalityName: any;
+          }) => ({
             id: x.id,
             name: x.name,
-            entityId: x.entityId,
-            entityName: x.entityName,
+            firstName: x.firstName,
+            lastName: x.lastName,
+            municipalityId: x.municipalityId,
+            municipalityName: x.municipalityName,
           })
         );
-        console.log(newdata);
+        console.log(response.data);
         setData(newdata);
       })
       .catch((e: Error) => {
@@ -161,52 +148,52 @@ const CountiesList: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const addCounty = useCallback(
-    () => () => {
-      navigate('/code_lists/counties/add');
+  const addEmployer = useCallback(
+    (instance: TableInstance<DataBaseDataEmployer>) => () => {
+      navigate('/code_lists/employers/add');
     },
     [navigate]
   );
 
-  const editCounty = useCallback(
-    (instance: TableInstance<DataBaseDataCounty>) => () => {
+  const editEmployer = useCallback(
+    (instance: TableInstance<DataBaseDataEmployer>) => () => {
       navigate(
-        '/code_lists/counties/' +
+        '/code_lists/employers/' +
           instance.selectedFlatRows.map((v) => `${v.original.id}`)
       );
     },
     [navigate]
   );
 
-  // const deleteCounty = useCallback(
-  //   (instance: TableInstance<DataBaseDataCounty>) => async () => {
-  //     CountyDataService.remove(instance.selectedFlatRows.map((v) => `${v.original.id}`))
+  // const deleteEmployer = useCallback(
+  //   (instance: TableInstance<DataBaseDataEmployer>) => async () => {
+  //     EmployerDataService.remove(
+  //       instance.selectedFlatRows.map((v) => `${v.original.id}`)
+  //     )
   //       .then((response: any) => {
   //         console.log(response.data);
-  //         dispatch({ type: 'LOG_IN' });
-  //         navigateTo('/code_lists/counties', false);
-  //         // window.location.reload();
+  //         navigate('/code_lists/employersh');
   //       })
   //       .catch((e: Error) => {
   //         console.log(e);
   //       });
   //   },
-  //   [dispatch]
+  //   [navigate]
   // );
 
   return (
     <Page>
       <CssBaseline />
-      <Table<DataBaseDataCounty>
-        name={t('counties')}
+      <Table<DataBaseDataEmployer>
+        name={t('employers')}
         columns={columns}
         data={data}
-        onAdd={addCounty}
-        onEdit={editCounty}
-        // onDelete={deleteCounty}
+        onAdd={addEmployer}
+        onEdit={editEmployer}
+        // onDelete={deleteEmployer}
       />
     </Page>
   );
 };
 
-export default CountiesList;
+export default EmployersList;

@@ -26,6 +26,9 @@ import AddCounty from './CodeLists/county/AddCounty';
 import AddMunicipality from './CodeLists/municipality/AddMunicipality';
 import MunicipalitiesList from './CodeLists/municipality/MunicipalitiesList';
 import Municipality from './CodeLists/municipality/Municipality';
+import AddEmployer from './CodeLists/employer/AddEmployer';
+import EmployersList from './CodeLists/employer/EmployersList';
+import Employer from './CodeLists/employer/Employer';
 
 const PrivateRoutes: React.FC = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
@@ -86,6 +89,18 @@ const PrivateRoutes: React.FC = () => {
           <Route
             path='code_lists/municipalities/:id'
             element={<Municipality />}
+          />
+          <Route
+            path='code_lists/employers'
+            element={<EmployersList />}
+          />
+          <Route
+            path='code_lists/employers/add'
+            element={<AddEmployer />}
+          />
+          <Route
+            path='code_lists/employers/:id'
+            element={<Employer />}
           />
         </Routes>
       </div>

@@ -17,13 +17,21 @@ export type Entities = {
 export type County = {
   id: number
   name: string
-  entitiesId: number
+  entityId: number
 }
 
 export type Municipality = {
   id: number
   name: string
   countyId: number
+}
+
+export type Employer = {
+  id: number
+  firstName: string
+  lastName: string
+  municipalityBornId: number
+  municipalityAddrId: number
 }
 
 const range = (len: number) => {
@@ -54,7 +62,7 @@ const newEntities = (): Entities => ({
 const newCounty = (): County => ({
   id: /*Math.floor(Math.random() * 30)*/0,
   name: /*namor.generate({ words: 1, saltLength: 0, subset: 'manly' })*/'',
-  entitiesId: /*Math.floor(Math.random() * 30)*/0,
+  entityId: /*Math.floor(Math.random() * 30)*/0,
 })
 
 const newMunicipality = (): Municipality => ({
@@ -63,6 +71,13 @@ const newMunicipality = (): Municipality => ({
   countyId: /*Math.floor(Math.random() * 30)*/0,
 })
 
+const newEmployer = (): Employer => ({
+  id: /*Math.floor(Math.random() * 30)*/0,
+  firstName: /*namor.generate({ words: 1, saltLength: 0, subset: 'manly' })*/'',
+  lastName: /*namor.generate({ words: 1, saltLength: 0, subset: 'manly' })*/'',
+  municipalityBornId: /*Math.floor(Math.random() * 30)*/0,
+  municipalityAddrId: /*Math.floor(Math.random() * 30)*/0,
+})
 
 // export type DataBaseData = Person & {
 //   subRows?: DataBaseData[]
@@ -78,6 +93,10 @@ export type DataBaseDataCounty = County & {
 
 export type DataBaseDataMunicipality = Municipality & {
   subRows?: DataBaseDataMunicipality[]
+}
+
+export type DataBaseDataEmployer = Employer & {
+  subRows?: DataBaseDataEmployer[]
 }
 
 // export function makeData(...lens: number[]): DataBaseData[] {
@@ -126,4 +145,16 @@ export function makeDataMunicipality(...lens: number[]): DataBaseDataMunicipalit
   }
 
   return makeDataLevelMunicipality()
+}
+
+export function makeDataEmployer(...lens: number[]): DataBaseDataEmployer[] {
+  const makeDataLevelEmployer = (depth = 0): DataBaseDataEmployer[] => {
+    const len = lens[depth]
+    return range(len).map(() => ({
+      ...newEmployer(),
+      subRows: lens[depth + 1] ? makeDataLevelEmployer(depth + 1) : undefined,
+    }))
+  }
+
+  return makeDataLevelEmployer()
 }
