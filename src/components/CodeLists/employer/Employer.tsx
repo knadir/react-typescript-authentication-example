@@ -32,8 +32,10 @@ export default function FreeSoloCreateOption() {
     id: null,
     firstName: '',
     lastName: '',
-    municipalityId: null,
-    municipalityName: '',
+    municipalityBornId: null,
+    municipalityBornName: '',
+    municipalityAddrId: null,
+    municipalityAddrName: '',
   };
   const [currentEmployer, setCurrentEmployer] =
     useState<IEmployerData>(initialEmployerState);
@@ -43,7 +45,9 @@ export default function FreeSoloCreateOption() {
     EmployerDataService.get(id)
       .then((response: any) => {
         setCurrentEmployer(response.data);
-        setValue(response.data.municipalityName);
+        setValueBorn(response.data.municipalityBornName);
+        setValueAddr(response.data.municipalityAddrName);
+        console.log('response.data...', response.data);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -60,8 +64,11 @@ export default function FreeSoloCreateOption() {
   };
 
   const updateEmployer = () => {
-    if (!(value?.id === undefined || value?.id === null)) {
-      currentEmployer.municipalityId = value?.id;
+    if (!(valueBorn?.id === undefined || valueBorn?.id === null)) {
+      currentEmployer.municipalityBornId = valueBorn?.id;
+    }
+    if (!(valueAddr?.id === undefined || valueAddr.id === null)) {
+      currentEmployer.municipalityAddrId = valueAddr?.id;
     }
     EmployerDataService.update(currentEmployer.id, currentEmployer)
       .then((response: any) => {
@@ -83,7 +90,12 @@ export default function FreeSoloCreateOption() {
       });
   };
 
-  const [value, setValue] = React.useState<MunicipalityType | null>(null);
+  const [valueBorn, setValueBorn] = React.useState<MunicipalityType | null>(
+    null
+  );
+  const [valueAddr, setValueAddr] = React.useState<MunicipalityType | null>(
+    null
+  );
 
   useEffect(() => {
     retrieveMunicipalities();
@@ -152,28 +164,28 @@ export default function FreeSoloCreateOption() {
             onChange={handleInputChange}
           />
           <Autocomplete
-            value={value}
+            value={valueBorn}
             isOptionEqualToValue={(option, value) =>
               option.inputValue === value.inputValue
             }
             onChange={(event, newValue) => {
               if (typeof newValue === 'string') {
-                setValue({
+                setValueBorn({
                   name: newValue,
                 });
               } else if (newValue && newValue.inputValue) {
                 // Create a new value from the user input
-                setValue({
+                setValueBorn({
                   name: newValue.inputValue,
                 });
               } else {
-                setValue(newValue);
+                setValueBorn(newValue);
               }
             }}
             selectOnFocus
             clearOnBlur
             handleHomeEndKeys
-            id='municipalityName'
+            id='municipalityBornName'
             options={municipalities}
             getOptionLabel={(option) => {
               // Value selected with enter, right from the input
@@ -191,7 +203,50 @@ export default function FreeSoloCreateOption() {
             sx={{ width: 500 }}
             //freeSolo
             renderInput={(params) => (
-              <TextField {...params} label={t('municipalities')} />
+              <TextField {...params} label={t('municipality_born')} />
+            )}
+          />
+          <Autocomplete
+            value={valueAddr}
+            isOptionEqualToValue={(option, value) =>
+              option.inputValue === value.inputValue
+            }
+            onChange={(event, newValue) => {
+              if (typeof newValue === 'string') {
+                setValueAddr({
+                  name: newValue,
+                });
+              } else if (newValue && newValue.inputValue) {
+                // Create a new value from the user input
+                setValueAddr({
+                  name: newValue.inputValue,
+                });
+              } else {
+                setValueAddr(newValue);
+              }
+            }}
+            selectOnFocus
+            clearOnBlur
+            handleHomeEndKeys
+            id='municipalityAddrName'
+            options={municipalities}
+            getOptionLabel={(option) => {
+              // Value selected with enter, right from the input
+              if (typeof option === 'string') {
+                return option;
+              }
+              // Regular option
+              return option.name;
+            }}
+            renderOption={(props, option) => (
+              <li {...props} key={option.id}>
+                {option.name}
+              </li>
+            )}
+            sx={{ width: 500 }}
+            //freeSolo
+            renderInput={(params) => (
+              <TextField {...params} label={t('municipality_addr')} />
             )}
           />
           <Stack sx={{ mt: 2 }} spacing={2} direction='row'>

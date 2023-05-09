@@ -2,22 +2,26 @@ export default interface IEmployerData {
   id?: number | null
   firstName: string
   lastName: string
-  municipalityId?: number | null
-  municipalityName?: string | null
+  municipalityBornId?: number | null
+  municipalityBornName?: string | null
+  municipalityAddrId?: number | null
+  municipalityAddrName?: string | null
 }
 
 export interface IEmployer {
   id?: number | null
   firstName: string
   lastName: string
-  municipalityId?: number | null
+  municipalityBornId?: number | null
+  municipalityAddrId?: number | null
 }
 
 export interface IEmployerType {
   id?: number | null
   firstName?: string
   lastName?: string
-  municipality?: IMunicipality
+  municipalityBorn?: IMunicipality
+  municipalityAddr?: IMunicipality
 }
 
 export interface ISelectOption {
@@ -36,7 +40,8 @@ export interface IEditableEmployer {
   id?: number | null
   firstName?: string
   lastName?: string
-  municipalityId?: IMunicipalityId
+  municipalityBornId?: IMunicipalityId
+  municipalityAddrId?: IMunicipalityId
   isNew: boolean
 }
 
@@ -56,5 +61,6 @@ export interface IError {
 export interface IEmployerRequest {
   firstName?: string
   lastName?: string
-  municipalityId?: IMunicipalityId
+  municipalityBornId?: IMunicipalityId
+  municipalityAddrId?: IMunicipalityId
 }

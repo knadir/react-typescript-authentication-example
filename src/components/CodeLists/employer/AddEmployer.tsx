@@ -18,15 +18,17 @@ interface MunicipalityType {
   id?: number;
 }
 
-const counties: MunicipalityType[] = [];
+const municipalities: MunicipalityType[] = [];
 
 const AddEmployer: React.FC = () => {
   const initialEmployerState = {
     id: null,
     firstName: '',
     lastName: '',
-    municipalityId: null,
-    municipalityName: '',
+    municipalityBornId: null,
+    municipalityBornName: '',
+    municipalityAddrId: null,
+    municipalityAddrName: '',
   };
 
   const [currentEmployer, setCurrentEmployer] =
@@ -39,17 +41,22 @@ const AddEmployer: React.FC = () => {
   };
 
   const saveEmployer = () => {
-    currentEmployer.municipalityId = value?.id;
+    currentEmployer.municipalityBornId = valueBorn?.id;
+    currentEmployer.municipalityAddrId = valueAddr?.id;
     const data = {
       id: currentEmployer.id,
       firstName: currentEmployer.firstName,
       lastName: currentEmployer.lastName,
-      municipalityId: currentEmployer.municipalityId,
+      municipalityBornId: currentEmployer.municipalityBornId,
+      municipalityAddrId: currentEmployer.municipalityAddrId,
     };
+    console.log('data...', data);
     EmployerDataService.create(data)
       .then((response: any) => {
+        console.log('response...', response);
         setCurrentEmployer({
-          municipalityId: response.data.id,
+          municipalityBornId: response.data.id,
+          municipalityAddrId: response.data.id,
           firstName: response.data.firstName,
           lastName: response.data.lastName,
         });
@@ -66,7 +73,8 @@ const AddEmployer: React.FC = () => {
     setSubmitted(false);
   };
 
-  const [value, setValue] = React.useState<MunicipalityType | null>(null);
+  const [valueBorn, setValueBorn] = React.useState<MunicipalityType | null>(null);
+  const [valueAddr, setValueAddr] = React.useState<MunicipalityType | null>(null);
 
   useEffect(() => {
     retrieveCounties();
@@ -80,12 +88,12 @@ const AddEmployer: React.FC = () => {
           name: x.name,
         }));
         for (let i = 0; i < newdata.length; i++) {
-          counties.push({ name: '', id: 0 });
+          municipalities.push({ name: '', id: 0 });
         }
 
         for (let i = 0; i < newdata.length; i++) {
-          counties[i].name = newdata[i].name;
-          counties[i].id = newdata[i].id;
+          municipalities[i].name = newdata[i].name;
+          municipalities[i].id = newdata[i].id;
         }
       })
       .catch((e: Error) => {
@@ -142,27 +150,27 @@ const AddEmployer: React.FC = () => {
                 onChange={handleInputChange}
               />
               <Autocomplete
-                value={value}
+                value={valueBorn}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(event, newValue) => {
                   if (typeof newValue === 'string') {
-                    setValue({
+                    setValueBorn({
                       name: newValue,
                     });
                   } else if (newValue && newValue.inputValue) {
                     // Create a new value from the user input
-                    setValue({
+                    setValueBorn({
                       name: newValue.inputValue,
                     });
                   } else {
-                    setValue(newValue);
+                    setValueBorn(newValue);
                   }
                 }}
                 selectOnFocus
                 clearOnBlur
                 handleHomeEndKeys
-                id='municipalityName'
-                options={counties}
+                id='municipalityBornName'
+                options={municipalities}
                 getOptionLabel={(option) => {
                   // Value selected with enter, right from the input
                   if (typeof option === 'string') {
@@ -177,7 +185,46 @@ const AddEmployer: React.FC = () => {
                 sx={{ width: 500 }}
                 //freeSolo
                 renderInput={(params) => (
-                  <TextField {...params} label='Counties' />
+                  <TextField {...params} label='Municipality born' />
+                )}
+              />
+              <Autocomplete
+                value={valueAddr}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                onChange={(event, newValue) => {
+                  if (typeof newValue === 'string') {
+                    setValueAddr({
+                      name: newValue,
+                    });
+                  } else if (newValue && newValue.inputValue) {
+                    // Create a new value from the user input
+                    setValueAddr({
+                      name: newValue.inputValue,
+                    });
+                  } else {
+                    setValueAddr(newValue);
+                  }
+                }}
+                selectOnFocus
+                clearOnBlur
+                handleHomeEndKeys
+                id='municipalityAddrName'
+                options={municipalities}
+                getOptionLabel={(option) => {
+                  // Value selected with enter, right from the input
+                  if (typeof option === 'string') {
+                    return option;
+                  }
+                  // Regular option
+                  return option.name;
+                }}
+                renderOption={(props, option) => (
+                  <li {...props}>{option.name}</li>
+                )}
+                sx={{ width: 500 }}
+                //freeSolo
+                renderInput={(params) => (
+                  <TextField {...params} label='Municipality address' />
                 )}
               />
               <br />

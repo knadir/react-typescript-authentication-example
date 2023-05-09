@@ -35,9 +35,13 @@ filterGreaterThan.autoRemove = (val: any) => typeof val !== 'number';
 const EmployersList: React.FC = () => {
   const { t } = useTranslation();
   const header_group_employers = t('employers');
-  const header_group_municipalities = t('municipalities');
+  const header_group_municipalities_born = t('municipalities_born');
+  const header_group_municipalities_addr = t('municipalities_addr');
   const header_id = t('id');
-  const header_name = t('name');
+  const header_born_id = t('id');
+  const header_born_name = t('name');
+  const header_addr_id = t('id');
+  const header_addr_name = t('name');
   const header_first_name = t('first_name');
   const header_last_name = t('last_name');
   const [data, setData] = React.useState<DataBaseDataEmployer[]>(() =>
@@ -91,11 +95,11 @@ const EmployersList: React.FC = () => {
       ],
     },
     {
-      Header: header_group_municipalities,
+      Header: header_group_municipalities_born,
       columns: [
         {
-          Header: header_id,
-          accessor: 'municipalityId',
+          Header: header_born_id,
+          accessor: 'municipalityBornId',
           // width: 20,
           // minWidth: 10,
           aggregate: 'count',
@@ -103,8 +107,30 @@ const EmployersList: React.FC = () => {
             `${value} Names`,
         },
         {
-          Header: header_name,
-          accessor: 'municipalityName',
+          Header: header_born_name,
+          accessor: 'municipalityBornName',
+          // minWidth: 50,
+          aggregate: 'count',
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
+            `${value} Names`,
+        },
+      ],
+    },
+    {
+      Header: header_group_municipalities_addr,
+      columns: [
+        {
+          Header: header_addr_id,
+          accessor: 'municipalityAddrId',
+          // width: 20,
+          // minWidth: 10,
+          aggregate: 'count',
+          Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
+            `${value} Names`,
+        },
+        {
+          Header: header_addr_name,
+          accessor: 'municipalityAddrName',
           // minWidth: 50,
           aggregate: 'count',
           Aggregated: ({ cell: { value } }: CellProps<DataBaseDataEmployer>) =>
@@ -127,15 +153,19 @@ const EmployersList: React.FC = () => {
             name: any;
             firstName: any;
             lastName: any;
-            municipalityId: any;
-            municipalityName: any;
+            municipalityBornId: any;
+            municipalityBornName: any;
+            municipalityAddrId: any;
+            municipalityAddrName: any;
           }) => ({
             id: x.id,
             name: x.name,
             firstName: x.firstName,
             lastName: x.lastName,
-            municipalityId: x.municipalityId,
-            municipalityName: x.municipalityName,
+            municipalityBornId: x.municipalityBornId,
+            municipalityBornName: x.municipalityBornName,
+            municipalityAddrId: x.municipalityAddrId,
+            municipalityAddrName: x.municipalityAddrName,
           })
         );
         console.log(response.data);
